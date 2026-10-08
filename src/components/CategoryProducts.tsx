@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import SortDropdown from "@/components/SortDropdown";
+import { toBn } from "@/lib/bn";
 import type { Product, SortOption } from "@/types";
 
 export default function CategoryProducts({
@@ -21,7 +22,10 @@ export default function CategoryProducts({
 
   return (
     <>
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between items-center mb-4 gap-3 flex-wrap">
+        <p className="text-sm text-gray-500">
+          মোট <b className="text-gray-900">{toBn(products.length)}</b>টি পণ্য দেখানো হচ্ছে
+        </p>
         <SortDropdown value={sort} onChange={setSort} />
       </div>
 
