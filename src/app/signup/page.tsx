@@ -7,6 +7,7 @@ import { signUp, signIn } from "@/lib/auth-client";
 import { Button } from "@heroui/react";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { toast } from "react-toastify";
+import PasswordInput from "@/components/PasswordInput";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -46,23 +47,23 @@ export default function SignUpPage() {
             name="name"
             required
             placeholder="নাম"
-            className="w-full border rounded-lg px-3 py-2.5 focus:outline-none focus:border-brand"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-brand transition-colors"
           />
           <input
             name="email"
             type="email"
             required
             placeholder="ইমেইল"
-            className="w-full border rounded-lg px-3 py-2.5 focus:outline-none focus:border-brand"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-brand transition-colors"
           />
-          <input
+
+          {/* ✅ Password with show/hide toggle */}
+          <PasswordInput
             name="password"
-            type="password"
-            required
+            placeholder="পাসওয়ার্ড (সর্বনিম্ন ৮ অক্ষর)"
             minLength={8}
-            placeholder="পাসওয়ার্ড"
-            className="w-full border rounded-lg px-3 py-2.5 focus:outline-none focus:border-brand"
           />
+
           <Button
             type="submit"
             isDisabled={loading}
@@ -80,7 +81,7 @@ export default function SignUpPage() {
             onClick={() =>
               signIn.social({ provider: "google", callbackURL: "/" })
             }
-            className="w-full flex items-center justify-center gap-2 border rounded-lg py-2.5 hover:bg-gray-50"
+            className="w-full flex items-center justify-center gap-2 border border-gray-200 rounded-lg py-2.5 hover:bg-gray-50 text-sm"
           >
             <FaGoogle className="text-red-500" /> Google দিয়ে সাইন আপ
           </button>
@@ -89,7 +90,7 @@ export default function SignUpPage() {
             onClick={() =>
               signIn.social({ provider: "github", callbackURL: "/" })
             }
-            className="w-full flex items-center justify-center gap-2 border rounded-lg py-2.5 hover:bg-gray-50"
+            className="w-full flex items-center justify-center gap-2 border border-gray-200 rounded-lg py-2.5 hover:bg-gray-50 text-sm"
           >
             <FaGithub /> GitHub দিয়ে সাইন আপ
           </button>
