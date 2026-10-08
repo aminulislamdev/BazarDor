@@ -26,3 +26,35 @@ export type RawProduct = {
   };
   markets: RawMarket[];
 };
+
+
+// ─── App-friendly Market ───
+export type Market = {
+  name: string;
+  division: string;
+  min: number;
+  max: number;
+  avg: number;
+};
+
+// ─── App-friendly Product ───
+export type Product = {
+  id: number;
+  slug: string;
+  name: string;
+  category: string;
+  categoryName: string;
+  categoryIcon: string;
+  unit: string;
+  emoji: string;
+  price: number;
+  yesterday: number;
+  lastWeek: number;
+  lastMonth: number;
+  change: number;
+  changeDir: "up" | "down" | "flat";
+  min: number;
+  max: number;
+  avg: number;
+  markets: Market[];
+};
