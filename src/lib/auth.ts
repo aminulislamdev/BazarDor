@@ -25,4 +25,8 @@ export const auth = betterAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     },
   },
+  trustedOrigins: [
+    "https://bazardor-nu.vercel.app",
+    "http://localhost:3000",
+  ],
 });
