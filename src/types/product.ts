@@ -57,4 +57,4 @@ export type Product = {
   max: number;
   avg: number;
   markets: Market[];
-};
+}; 
