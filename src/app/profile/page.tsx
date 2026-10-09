@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
 import { useSession, signOut } from "@/lib/auth-client";
 import { FiLogOut } from "react-icons/fi";
 import { toast } from "react-toastify";
+import UpdateForm from "@/components/UpdateForm";
 
 export default function ProfilePage() {
   const { data: session, isPending } = useSession();
@@ -24,7 +23,9 @@ export default function ProfilePage() {
     try {
       await signOut();
       toast.success("সফলভাবে সাইন আউট হয়েছে");
-      router.push("/");
+      setTimeout(() => {
+        router.push("/");
+      }, 800);
     } catch {
       toast.error("সাইন আউট ব্যর্থ হয়েছে");
       setSigningOut(false);
@@ -34,24 +35,24 @@ export default function ProfilePage() {
   if (isPending) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl border p-6 text-sm text-gray-500">
-          ডেটা লোড হচ্ছে...
-        </div>
+        <div className="h-8 w-48 bg-gray-200 rounded mb-2 animate-pulse" />
+        <div className="h-4 w-64 bg-gray-100 rounded mb-6 animate-pulse" />
+        <div className="bg-white rounded-xl border p-6 h-24 animate-pulse mb-4" />
+        <div className="bg-white rounded-xl border p-6 h-48 animate-pulse" />
       </div>
     );
   }
 
-  if (!session?.user) {
-    return null;
+  if (!session) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-16 text-center">
+        <p className="text-gray-500">লগইন পেজে নিয়ে যাওয়া হচ্ছে…</p>
+      </div>
+    );
   }
 
-  const userDisplayName = session.user.name ?? "User";
-  const userEmail = session.user.email ?? userDisplayName;
-  const avatarUrl =
-    session.user.image ??
-    `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
-      userEmail
-    )}`;
+  // ✅ First letter of name (uppercase)
+  const firstLetter = session.user.name?.[0]?.toUpperCase() ?? "?";
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -62,16 +63,13 @@ export default function ProfilePage() {
         </p>
       </div>
 
+      {/* User card */}
       <div className="bg-white rounded-xl border p-6 mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <Image
-            src={avatarUrl}
-            alt={session.user.name ?? "user"}
-            width={56}
-            height={56}
-            unoptimized
-            className="w-14 h-14 rounded-full object-cover bg-gray-100"
-          />
+          {/* ✅ Letter avatar */}
+          <div className="w-14 h-14 rounded-full bg-brand/10 text-brand flex items-center justify-center font-bold text-xl shrink-0">
+            {firstLetter}
+          </div>
           <div>
             <div className="font-semibold text-gray-900">
               {session.user.name}
@@ -90,19 +88,8 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      {/* Update info card */}
-      <div className="bg-white rounded-xl border p-6">
-        <h2 className="font-semibold text-gray-900 mb-2">তথ্য</h2>
-        <p className="text-sm text-gray-500 mb-4">
-          আপনার নাম পরিবর্তন করতে চাইলে নিচের বাটনে ক্লিক করুন।
-        </p>
-        <Link
-          href="/profile/update"
-          className="inline-block px-5 py-2.5 bg-brand text-white rounded-lg hover:bg-brand-dark transition-colors text-sm font-medium"
-        >
-          তথ্য আপডেট করুন
-        </Link>
-      </div>
+      {/* Update form */}
+      <UpdateForm />
     </div>
   );
 }
