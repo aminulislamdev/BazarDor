@@ -2,12 +2,16 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession, signOut } from "@/lib/auth-client";
 import { FiUser, FiLogOut } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 export default function NavAuth() {
   const { data: session } = useSession();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -21,6 +25,26 @@ export default function NavAuth() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // ✅ Sign out with toast + reload
+  async function handleSignOut() {
+    setSigningOut(true);
+    setOpen(false);
+
+    try {
+      await signOut();
+      toast.success("সফলভাবে সাইন আউট হয়েছে");
+
+      // Small delay for toast to show
+      setTimeout(() => {
+        router.push("/");
+      }, 800);
+    } catch {
+      toast.error("সাইন আউট ব্যর্থ হয়েছে");
+      setSigningOut(false);
+    }
+  }
+
+  // Not logged in
   if (!session) {
     return (
       <div className="flex items-center gap-2 shrink-0">
@@ -40,12 +64,13 @@ export default function NavAuth() {
     );
   }
 
-  // Logged in — profile chip + dropdown
+  // Logged in — dropdown
   return (
     <div className="relative shrink-0" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors"
+        disabled={signingOut}
+        className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
         aria-haspopup="menu"
         aria-expanded={open}
       >
@@ -83,7 +108,7 @@ export default function NavAuth() {
             </div>
           </div>
 
-          {/* Menu items */}
+          {/* Profile link */}
           <Link
             href="/profile"
             onClick={() => setOpen(false)}
@@ -93,15 +118,14 @@ export default function NavAuth() {
             <span>আমার প্রোফাইল</span>
           </Link>
 
+          {/* Sign out */}
           <button
-            onClick={() => {
-              setOpen(false);
-              signOut();
-            }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
+            onClick={handleSignOut}
+            disabled={signingOut}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors text-left disabled:opacity-50"
           >
             <FiLogOut />
-            <span>সাইন আউট</span>
+            <span>{signingOut ? "সাইন আউট হচ্ছে…" : "সাইন আউট"}</span>
           </button>
         </div>
       )}
