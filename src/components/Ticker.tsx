@@ -10,7 +10,7 @@ export default function Ticker() {
 
   useEffect(() => {
     fetchProducts()
-      .then((list) => setItems(list.slice(0, 10)))
+      .then((list) => setItems(list))
       .catch(() => setItems([]));
   }, []);
 
@@ -18,7 +18,7 @@ export default function Ticker() {
 
   return (
     <div className="bg-brand-light border-y border-brand/20 overflow-hidden">
-      <div className="flex animate-[marquee_35s_linear_infinite] whitespace-nowrap py-1.5 hover:paused">
+      <div className="flex animate-[marquee_15s_linear_infinite] md:animate-[marquee_20s_linear_infinite] whitespace-nowrap py-1.5 hover:paused">
         {[...items, ...items].map((p, i) => {
           const ch = formatChange(p.change, p.changeDir);
           const color =
