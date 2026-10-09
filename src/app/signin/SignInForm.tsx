@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "@/lib/auth-client";
 import { Button } from "@heroui/react";
 import { FaGoogle, FaGithub } from "react-icons/fa";
@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 import PasswordInput from "@/components/PasswordInput";
 
 export default function SignInForm() {
-  const router = useRouter();
   const params = useSearchParams();
   const redirect = params.get("redirect") ?? "/";
   const [loading, setLoading] = useState(false);
@@ -25,15 +24,16 @@ export default function SignInForm() {
       password: fd.get("password") as string,
     });
 
-    setLoading(false);
-
     if (error) {
+      setLoading(false);
       toast.error(error.message ?? "লগইন ব্যর্থ হয়েছে");
       return;
     }
 
     toast.success("সফলভাবে লগইন হয়েছে");
-    router.push(redirect);
+    setTimeout(() => {
+      window.location.href = redirect;
+    }, 1200);
   }
 
   return (
@@ -50,7 +50,6 @@ export default function SignInForm() {
             className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-brand transition-colors"
           />
 
-          {/* ✅ Password with show/hide toggle */}
           <PasswordInput name="password" placeholder="পাসওয়ার্ড" />
 
           <Button
@@ -70,16 +69,16 @@ export default function SignInForm() {
             onClick={() =>
               signIn.social({ provider: "google", callbackURL: redirect })
             }
-            className="w-full flex items-center justify-center gap-2 border border-gray-200 rounded-lg py-2.5 hover:bg-gray-50 text-sm cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 border border-gray-200 rounded-lg py-2.5 hover:bg-gray-50 text-sm"
           >
-            <FaGoogle className="text-red-500 " /> Google দিয়ে সাইন ইন
+            <FaGoogle className="text-red-500" /> Google দিয়ে সাইন ইন
           </button>
           <button
             type="button"
             onClick={() =>
               signIn.social({ provider: "github", callbackURL: redirect })
             }
-            className="w-full flex items-center justify-center gap-2 border border-gray-200 rounded-lg py-2.5 hover:bg-gray-50 text-sm cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 border border-gray-200 rounded-lg py-2.5 hover:bg-gray-50 text-sm"
           >
             <FaGithub /> GitHub দিয়ে সাইন ইন
           </button>
@@ -87,7 +86,7 @@ export default function SignInForm() {
 
         <p className="text-center text-sm text-gray-600 mt-6">
           অ্যাকাউন্ট নেই?{" "}
-          <Link href="/signup" className="text-brand font-medium cursor-pointer">
+          <Link href="/signup" className="text-brand font-medium">
             সাইন আপ
           </Link>
         </p>
